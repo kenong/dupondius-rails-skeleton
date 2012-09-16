@@ -10,6 +10,7 @@ gem "capistrano"
 gem 'jquery-rails'
 
 gem "unicorn"
+gem "bigdecimal"
 
 # Gems used only for assets and not required
 # in production environments by default.
