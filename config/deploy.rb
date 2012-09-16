@@ -1,13 +1,91 @@
-set :application, "set your application name here"
-set :repository,  "set your repository location here"
+load "deploy/assets"
+require 'bundler/capistrano'
 
-set :scm, :subversion
-# Or: `accurev`, `bzr`, `cvs`, `darcs`, `git`, `mercurial`, `perforce`, `subversion` or `none`
+default_run_options[:pty] = true
 
-role :web, "your web-server here"                          # Your HTTP server, Apache/etc
-role :app, "your app-server here"                          # This may be the same as your `Web` server
-role :db,  "your primary db-server here", :primary => true # This is where Rails migrations will run
-role :db,  "your slave db-server here"
+# TODO: application should be set from project_name env var
+set :application, "railz"
+set :repository,  "git@github.com:projext/railz.git"
+set :user, "deployer"  # The server's user for deploys
+set :scm, :git
+set :git_shallow_clone, 1
+set :use_sudo, false
+set :applicationdir, "/opt/app/#{application}"
+set :deploy_to, applicationdir
+set :keep_releases, 5
+
+# TODO: Make the key an env var
+ssh_options[:keys] = %w(../deployer.pem)
+
+after "deploy:setup", 'deploy:db:create'
+after "deploy:update_code", "deploy:migrate"
+after 'deploy:update', 'foreman:export'
+after 'deploy:update', 'foreman:restart'
+
+
+namespace :deploy do
+  namespace :db do
+    desc 'Create the database'
+    task :create do
+      puts "\n\n=== Creating the Database! ===\n\n"
+      create_sql = <<-SQL
+        CREATE DATABASE $DB_NAME;
+      SQL
+      run "mysql --user=$DB_USERNAME --password=$DB_PASSWORD --execute=\"#{create_sql}\""
+    end
+
+    desc 'Seed the database'
+    task :seed do
+      puts "\n\n=== Populating the Database! ===\n\n"
+      run "cd #{release_path}; rake db:seed RAILS_ENV=#{rails_env}"
+    end
+  end
+end
+
+namespace :foreman do
+  desc "Export the Procfile to inittab"
+  task :export, :roles => :app do
+    run ["cd #{release_path}",
+      # Setup application environment variables
+      "mkdir -p tmp/foreman",
+      "echo \"RAILS_ENV=#{rails_env}\" > ./tmp/env",
+      "echo \"AWS_ENABLED=#{ENV['AWS_ENABLED']}\" >> ./tmp/env",
+      "echo \"PROJECT_NAME=#{ENV['PROJECT_NAME']}\" >> ./tmp/env",
+
+      # Push the database environment variables into the app
+      "cat /etc/default/app >> ./tmp/env",
+
+      # Move it to the common place
+      "sudo mv tmp/env /etc/default/#{application}",
+
+      # Get foreman to the inittab script
+      "bundle exec foreman export initscript ./tmp/foreman -e /etc/default/#{application} -f ./Procfile.production -a #{application} -u #{user} -l #{shared_path}/log",
+      "sudo mv tmp/foreman/#{application} /etc/init.d",
+      "chmod +x /etc/init.d/#{application}",
+      "rm -rf tmp/foreman"
+    ].join(' && ')
+  end
+
+  desc "Start the application services"
+  task :start, :roles => :app do
+    sudo "/etc/init.d/#{application} start"
+  end
+
+  desc "Stop the application services"
+  task :stop, :roles => :app do
+    sudo "/etc/init.d/#{application} stop"
+  end
+
+  desc "Restart the application services"
+  task :restart, :roles => :app do
+    sudo "/etc/init.d/#{application} restart"
+  end
+
+  desc "Display logs for a certain process - arg example: PROCESS=web-1"
+  task :logs, :roles => :app do
+    run "cd #{current_path}/log && cat #{ENV["PROCESS"]}.log"
+  end
+end
 
 # if you want to clean up old releases on each deploy uncomment this:
 # after "deploy:restart", "deploy:cleanup"
@@ -16,10 +94,12 @@ role :db,  "your slave db-server here"
 # these http://github.com/rails/irs_process_scripts
 
 # If you are using Passenger mod_rails uncomment this:
-# namespace :deploy do
-#   task :start do ; end
-#   task :stop do ; end
-#   task :restart, :roles => :app, :except => { :no_release => true } do
-#     run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
-#   end
-# end
+ #namespace :deploy do
+   #task :start do
+      #run "cd #{current_path}/ && bundle exec foreman start"
+   #end
+   #task :stop do ; end
+   #task :restart, :roles => :app, :except => { :no_release => true } do
+     #run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+   #end
+ #end
