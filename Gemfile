@@ -10,6 +10,7 @@ gem "capistrano"
 gem 'jquery-rails'
 
 gem "unicorn"
+gem 'foreman'
 gem "bigdecimal"
 
 # Gems used only for assets and not required
@@ -29,5 +30,4 @@ gem "rspec-rails", :group => [:development, :test]
 # gem 'devise'
 # gem 'cancan'
 # gem 'activeadmin'
-# gem 'foreman'
 # gem 'resque' # requires redis to have been installed
