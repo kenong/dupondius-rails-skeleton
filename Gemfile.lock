@@ -1,3 +1,10 @@
+GIT
+  remote: git://github.com/Draiken/foreman-export-initscript.git
+  revision: 70ea37aa23fbc1b483a90a037cb906b7f2c8c042
+  specs:
+    foreman-export-initscript (0.0.1)
+      foreman
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -147,6 +154,7 @@ DEPENDENCIES
   capistrano
   coffee-rails (~> 3.2.1)
   foreman
+  foreman-export-initscript!
   jquery-rails
   mysql2
   rails (= 3.2.7)
