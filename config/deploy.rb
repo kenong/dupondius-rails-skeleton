@@ -4,7 +4,7 @@ require 'bundler/capistrano'
 default_run_options[:pty] = true
 
 # TODO: application should be set from project_name env var
-set :application, "railz"
+set :application, "dupondius"
 set :repository,  "git@github.com:projext/railz.git"
 set :user, "deployer"  # The server's user for deploys
 set :scm, :git
