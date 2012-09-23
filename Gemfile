@@ -24,7 +24,11 @@ group :assets do
   gem "therubyracer"
 end
 
-gem "rspec-rails", :group => [:development, :test]
+group :development, :test do
+  gem "rspec-rails"
+  gem 'cucumber-rails', :require => false
+  gem 'database_cleaner'
+end
 
 # other gems useful gems
 # gem 'paper_trail'

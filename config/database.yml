@@ -26,6 +26,8 @@ canary:
 development:
   <<: *base
 
-test:
+test: &test
   <<: *base
 
+cucumber:
+  <<: *test
