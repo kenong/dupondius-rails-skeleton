@@ -13,6 +13,7 @@ gem "unicorn"
 gem 'foreman'
 gem 'foreman-export-initscript', :git => 'git://github.com/Draiken/foreman-export-initscript.git'
 gem "bigdecimal"
+gem 'newrelic_rpm'
 
 # Gems used only for assets and not required
 # in production environments by default.
