@@ -4,7 +4,7 @@ require 'bundler/capistrano'
 default_run_options[:pty] = true
 
 set :application, ENV['PROJECT_NAME']
-set :repository, ENV['GITHUB_PROJECT']
+set :repository, "git@github.com:#{ENV['GITHUB_PROJECT_USER']}/#{ENV['PROJECT_NAME']}.git"
 set :user, "deployer"  # The server's user for deploys
 set :scm, :git
 set :git_shallow_clone, 1
@@ -13,8 +13,10 @@ set :applicationdir, "/opt/app/#{application}"
 set :deploy_to, applicationdir
 set :keep_releases, 5
 
-# TODO: Make the key an env var
-ssh_options[:keys] = %w(../deployer.pem)
+ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/id_rsa)
+
+set :stages, %w(production staging qa canary)
+require 'capistrano/ext/multistage'
 
 after "deploy:setup", 'deploy:db:create'
 after "deploy:update_code", "deploy:migrate"
