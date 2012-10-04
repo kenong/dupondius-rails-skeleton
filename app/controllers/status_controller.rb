@@ -4,6 +4,6 @@ class StatusController < ApplicationController
   end
 
   def version
-    render :text => app_version
+    render :text => helper.app_version
   end
 end
