@@ -1,4 +1,8 @@
 DupondiusRailsSkeleton::Application.routes.draw do
+  
+  get "status/index"
+  get "status/version"
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
