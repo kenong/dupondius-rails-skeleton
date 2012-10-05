@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe StatusController do
 
-  describe "GET 'index'" do
+  describe "GET 'heart_beat'" do
     it "returns http success" do
-      get 'index'
+      get 'heart_beat'
       response.should be_success
     end
   end

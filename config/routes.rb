@@ -1,6 +1,6 @@
 DupondiusRailsSkeleton::Application.routes.draw do
   
-  get "status/index"
+  get "status/heart_beat"
   get "status/version"
 
   # The priority is based upon order of creation:

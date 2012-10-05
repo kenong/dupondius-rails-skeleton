@@ -1,5 +1,5 @@
 class StatusController < ApplicationController
-  def index
+  def heart_beat
     render :text => 'OK'
   end
 
