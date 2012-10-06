@@ -15,7 +15,7 @@ set :keep_releases, 5
 
 ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/id_rsa)
 
-set :stages, %w(production staging qa canary)
+set :stages, %w(production staging qa canary development)
 require 'capistrano/ext/multistage'
 
 after "deploy:setup", 'deploy:db:create'
