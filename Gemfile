@@ -6,7 +6,6 @@ gem 'rails', '3.2.7'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
-gem "capistrano"
 gem 'jquery-rails'
 
 gem "unicorn"
@@ -29,6 +28,9 @@ group :development, :test do
   gem "rspec-rails"
   gem 'cucumber-rails', :require => false
   gem 'database_cleaner'
+  gem "capistrano", :require => false
+  gem 'elbow', :require => false
+  gem 'capistrano-s3-copy', :git => 'git://github.com/srbartlett/capistrano-s3-copy.git', :require => false
 end
 
 # other gems useful gems

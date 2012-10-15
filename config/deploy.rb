@@ -1,5 +1,7 @@
 load "deploy/assets"
 require 'bundler/capistrano'
+require 'capistrano-s3-copy'
+require 'elbow/capistrano'
 
 default_run_options[:pty] = true
 
@@ -12,6 +14,10 @@ set :use_sudo, false
 set :applicationdir, "/opt/app/#{application}"
 set :deploy_to, applicationdir
 set :keep_releases, 5
+set :deploy_via, :s3_copy
+set :aws_access_key_id,     ENV['AWS_ACCESS_KEY_ID']
+set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
+set :aws_releases_bucket, 'dupondius_releases'
 
 ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/id_rsa)
 
