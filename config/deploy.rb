@@ -19,7 +19,7 @@ set :aws_access_key_id,     ENV['AWS_ACCESS_KEY_ID']
 set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
 set :aws_releases_bucket, 'dupondius_release'
 
-ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/id_rsa)
+ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/deployer.pem)
 
 set :stages, %w(production staging qa canary development)
 require 'capistrano/ext/multistage'
