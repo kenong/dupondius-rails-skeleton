@@ -18,6 +18,7 @@ set :deploy_via, :s3_copy
 set :aws_access_key_id,     ENV['AWS_ACCESS_KEY_ID']
 set :aws_secret_access_key, ENV['AWS_SECRET_ACCESS_KEY']
 set :aws_releases_bucket, 'dupondius_release'
+set :aws_calling_format, 'SUBDOMAIN'
 
 ssh_options[:keys] = %w(/var/lib/jenkins/.ssh/deployer.pem)
 
